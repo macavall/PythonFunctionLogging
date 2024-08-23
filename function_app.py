@@ -1,24 +1,18 @@
 import azure.functions as func
 import logging
-import os
-
-# Configure logging to write to a file
-log_directory = "/home/LogFiles"
-log_filename = "logs.txt"
-log_path = os.path.join(log_directory, log_filename)
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
-
-# Configure the logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[logging.FileHandler(log_path), logging.StreamHandler()])
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="http1")
 def http1(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+    
+    # Define the file path and the text to be written
+    file_path = "/home/LogFiles/output.txt"
+    text_to_write = "Hello, this is a simple text file created by a Python script."
+    
+    with open(file_path, "w") as file:
+        file.write(text_to_write)
 
     name = req.params.get('name')
     if not name:
